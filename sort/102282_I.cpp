@@ -1,82 +1,76 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int n;
-int r[12], c[12];
-int ct[12];
-int p[12][12];
-int num[12];
-int ok = 0;
+int n, x[12], y[12], multi[12], used[12];
+set<int> flag;
+int ans[12][12];
 
-set<int> st;
-
-void rec(int x) {
-    if (ok)
-        return;
-    if (x == n + 1) {
-         for (int i = 1; i <= n; i++) {
-             for (int j = 1; j <= n; j++) {
-                 cout << p[i][j] << ' ';
-             }
-             cout << endl;
-         }
-         ok = 1;
-         return;
-    }
-
-    for (int k = 1; k * k <= r[x]; k++) {
-        if (r[x] % k)
-            continue;
-        int a = k, b = r[x] / k;
-        if (st.find(a) != st.end() || st.find(b) != st.end())
-            continue;
-        if (a == b)
-            continue;
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (i == j)
-                    continue;
-                if (num[i] == 2 || num[j] == 2)
-                    continue;
-                if (num[i] == 1 && ct[i] * a != c[i])
-                    continue;
-                if (num[j] == 1 && ct[j] * b != c[j])
-                    continue;
-                if (num[i] == 0 && c[i] % a)
-                    continue;
-                if (num[j] == 0 && c[j] % b)
-                    continue;
-
-                st.insert(a), st.insert(b);
-                num[i]++, num[j]++;
-                ct[i] *= a, ct[j] *= b;
-                p[x][i] = a, p[x][j] = b;
-
-                rec(x + 1);
-
-                ct[i] /= a, ct[j] /= b;
-                num[i]--, num[j]--;
-                p[x][i] = 0, p[x][j] = 0;
-                st.erase(a), st.erase(b);
-            }
-        }
-    }
-}
-
-void solve() {
-    cin >> n;
-    for (int i = 1; i <= n; i++)
-        cin >> c[i], ct[i] = 1;
-    for (int i = 1; i <= n; i++)
-        cin >> r[i];
-    rec(1);
+bool dfs(int cur_id) {
+	if (cur_id == n + 1) {
+		for(int i = 1; i <= n; i ++) {
+			for(int j = 1; j <= n; j ++) {
+				printf("%d%c", ans[i][j], j == n ? '\n' : ' ');
+			}
+		}
+		return true;
+	}
+	for(int k = 1; k * k < y[cur_id]; k ++) {
+		if(y[cur_id] % k) {
+			continue;
+		}
+		int u = k, v = y[cur_id] / k;
+		if(flag.count(u) || flag.count(v)) {
+			continue;
+		}
+		for(int i = 1; i <= n; i ++) {
+			for(int j = 1; j <= n; j ++) {
+				if(i == j
+				 || (used[i] == 2 || used[j] == 2)
+				 || (used[i] == 1 && multi[i] * u != x[i])
+				 || (used[j] == 1 && multi[j] * v != x[j])
+				 || (used[i] == 0 && x[i] % u != 0)
+				 || (used[j] == 0 && x[j] % v != 0)
+				 ) {
+					continue;
+				}
+				flag.insert(u);
+				flag.insert(v);
+				used[i] ++;
+				used[j] ++;
+				multi[i] *= u;
+				multi[j] *= v;
+				ans[cur_id][i] = u;
+				ans[cur_id][j] = v;
+				if(dfs(cur_id + 1)) {
+					return true;
+				}
+				flag.erase(u);
+				flag.erase(v);
+				used[i] --;
+				used[j] --;
+				multi[i] /= u;
+				multi[j] /= v;
+				ans[cur_id][i] = 0;
+				ans[cur_id][j] = 0;
+			}
+		}
+	}
+	return false;
 }
 
 int main() {
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
-    ios::sync_with_stdio(NULL), cin.tie(0), cout.tie(0);
-    cout.setf(ios::fixed), cout.precision(20);
-    solve();
-    return 0;
+	freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+	scanf("%d", &n);
+	for(int i = 1; i <= n; i ++) {
+		scanf("%d", x + i);
+	}
+	for(int i = 1; i <= n; i ++) {
+		scanf("%d", y + i);
+	}
+	for(int i = 1; i <= n; i ++) {
+		multi[i] = 1;
+	}
+	dfs(1);
+	return 0;
 }
