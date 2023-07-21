@@ -1,29 +1,22 @@
-#include<bits/stdc++.h>
-
-using namespace std;
+#include "bits/stdc++.h"
 
 int main() {
-	
 	srand(time(0));
-	
-	int n = 10, m = 20, k = 10;
-	printf("%d %d %d\n", n, m, k);
-	set<pair<int, int>> st;
-	for(int i = 0; i < m; i ++) {
-		int u, v;
-		while((u = rand() % 10 + 1) == (v = rand() % 10 + 1) or st.count({u, v}));
-		st.insert({u, v});
-		st.insert({v, u});
-		cout << u << ' ' << v << endl;
+	freopen("in1.txt", "w", stdout);
+	int n = 1e5;
+	printf("%d\n", n);
+	for(int i = 1; i < n; i ++) {
+		printf("%d%c", (rand() & 1) ? 5 : 1, " \n"[i == n - 1]);
 	}
-	
-	cout << 10 << endl;
-	int p[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, };
-	random_shuffle(p, p + 10);
-	for(int i = 0; i < 10; i ++) {
-		int t = rand() % 2 + 1;
-		cout << t << ' ' << p[i] << endl;
+	for(int i = 1; i < n; i ++) {
+		printf("%d%c", (rand() & 1) ? 5 : 1, " \n"[i == n - 1]);
 	}
-	
+	int q = 1e5;
+	printf("%d\n", q);
+	for(int i = 0; i < q; i ++) {
+		for(int j = 0; j < 4; j ++) {
+			printf("%d%c", 1ll * rand() * rand() % n + 1, " \n"[j == 3]);
+		}
+	}
 	return 0;
 }
